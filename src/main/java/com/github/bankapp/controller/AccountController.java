@@ -6,14 +6,18 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.bankapp.dto.TransactionRequest;
 import com.github.bankapp.service.AccountService;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/account")
 public class AccountController {
 
     @Autowired
@@ -30,9 +34,54 @@ public class AccountController {
         }
         catch(Exception e){
             Map<String, String> response = new HashMap<>();
-		    response.put("msg", "Failed to create account");
+		    response.put("msg", "Failed to create account: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } 
+    }
+
+    @PostMapping("/{accountId}/deposit")
+    public ResponseEntity<?> depositFunds(@PathVariable String accountId, @RequestBody TransactionRequest transactionRequest) {
+        try {
+            Long transactionId = accountService.deposit(accountId, transactionRequest.getAmount());
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Funds deposited successfully.");
+            response.put("transaction_id", transactionId.toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Failed to deposit funds: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<?> withdrawFunds(@PathVariable String accountId, @RequestBody TransactionRequest transactionRequest) {
+        try {
+            Long transactionId = accountService.withdraw(accountId, transactionRequest.getAmount());
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Funds withdrawn successfully.");
+            response.put("transaction_id", transactionId.toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Failed to withdraw funds: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{accountId}/balance")
+    public ResponseEntity<?> checkBalance(@PathVariable String accountId){
+        try {
+            double balance = accountService.checkBalance(accountId);
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Balance fetched successfully.");
+            response.put("balance", Double.toString(balance));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Failed to fetch balance: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
