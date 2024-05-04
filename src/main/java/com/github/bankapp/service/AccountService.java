@@ -75,4 +75,13 @@ public class AccountService {
 
         return transactionId;
     }
+
+    public double checkBalance(String accountId){
+        // retrieve and validate account
+        Account account = accountRepository.findByAccountId(accountId);
+        if (account == null){
+            throw new IllegalArgumentException("Account not found");
+        }
+        return account.getBalance();
+    }
 }
