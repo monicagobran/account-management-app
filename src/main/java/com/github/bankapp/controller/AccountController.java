@@ -53,4 +53,19 @@ public class AccountController {
         }
     }
 
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<?> withdrawFunds(@PathVariable String accountId, @RequestBody TransactionRequest transactionRequest) {
+        try {
+            Long transactionId = accountService.withdraw(accountId, transactionRequest.getAmount());
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Funds withdrawn successfully.");
+            response.put("transaction_id", transactionId.toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+		    response.put("msg", "Failed to withdraw funds: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

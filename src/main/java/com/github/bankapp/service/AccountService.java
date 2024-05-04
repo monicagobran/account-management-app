@@ -51,4 +51,28 @@ public class AccountService {
 
         return transactionId;
     }
+
+    public Long withdraw(String accountId, double amount){
+        // retrieve and validate account
+        Account account = accountRepository.findByAccountId(accountId);
+        if (account == null){
+            throw new IllegalArgumentException("Account not found");
+        }
+        // validate amount
+        if (amount <= 0.0){
+            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+        }
+        double curBalance = account.getBalance();
+        if (amount > curBalance){
+            throw new IllegalArgumentException("Withdrawal amount must be greater than current balance.");
+        }
+        
+        // create withdraw transaction
+        Long transactionId = transactionService.withdraw(accountId, amount);
+        // update balance
+        account.setBalance(curBalance - amount);
+        accountRepository.save(account);
+
+        return transactionId;
+    }
 }
