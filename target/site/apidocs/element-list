@@ -1,0 +1,7 @@
+com.github.bankapp
+com.github.bankapp.controller
+com.github.bankapp.dto
+com.github.bankapp.entity
+com.github.bankapp.exception
+com.github.bankapp.repository
+com.github.bankapp.service

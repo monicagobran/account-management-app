@@ -18,9 +18,16 @@ import com.github.bankapp.dto.TransactionRequest;
 import com.github.bankapp.dto.TransactionResponse;
 import com.github.bankapp.service.AccountService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 
+@Tag(name = "Account", description = "Account management APIs")
 @RestController
 @Validated
 @RequestMapping("/account")
@@ -29,6 +36,19 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+   /**
+    * Creates a new account and returns the account ID or an
+     * error response.
+    * 
+    * @return respose including account ID in case creation is successful, 
+    * or an appropiate error message in case of failure.
+    */
+    @Operation(summary = "Create a new account", tags = { "Account"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "500", content = { 
+            @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json") }) })
     @PostMapping
     public ResponseEntity<?> openAccount(){
         try{
@@ -42,6 +62,21 @@ public class AccountController {
         } 
     }
 
+    /**
+     * This function deposits funds into an account and returns the Transaction ID or an
+     * error response.
+     * 
+     * @param accountId ID of account into which funds will be deposited
+     * @param transactionRequest includes amount which will be deposited
+     * @return respose including transaction ID in case transaction is successful, 
+     * or an appropiate error message in case of failure.  
+     */
+    @Operation(summary = "Deposit funds into account", tags = { "Account"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TransactionResponse.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "400", content = { 
+            @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json") }) })
     @PostMapping("/{accountId}/deposit")
     public ResponseEntity<?> depositFunds(
         @PathVariable @Pattern(regexp="[a-fA-F0-9]{8}", message="account ID is invalid")  String accountId, 
@@ -56,6 +91,21 @@ public class AccountController {
         }
     }
 
+    /**
+     * Withdraws funds from an account and returns the transaction ID or an
+     * error response.
+     * 
+     * @param accountId ID of account from which funds will be withdrawn
+     * @param transactionRequest includes amount which will be withdrawn
+     * @return respose including transaction ID in case transaction is successful, 
+     * or an appropiate error message in case of failure.  
+     */
+    @Operation(summary = "Withdraw funds from account", tags = { "Account"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TransactionResponse.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "400", content = { 
+            @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json") }) })
     @PostMapping("/{accountId}/withdraw")
     public ResponseEntity<?> withdrawFunds(
         @PathVariable @Pattern(regexp="[a-fA-F0-9]{8}", message="account ID is invalid") String accountId, 
@@ -70,6 +120,21 @@ public class AccountController {
         }
     }
 
+
+    /**
+     * Checks the account balance for a given account ID and returns the balance or an
+     * error response.
+     * 
+     * @param accountId ID of account to check balance
+     * @return respose including balance in case transaction is successful, 
+     * or an appropiate error message in case of failure.
+     */
+    @Operation(summary = "Check account balance", tags = { "Account"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = BalanceResponse.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "400", content = { 
+            @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json") }) })
     @GetMapping("/{accountId}/balance")
     public ResponseEntity<?> checkBalance(@PathVariable @Pattern(regexp="[a-fA-F0-9]{8}", message="account ID is invalid") String accountId){
         try {
