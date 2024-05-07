@@ -36,6 +36,13 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+   /**
+    * Creates a new account and returns the account ID or an
+     * error response.
+    * 
+    * @return respose including account ID in case creation is successful, 
+    * or an appropiate error message in case of failure.
+    */
     @Operation(summary = "Create a new account", tags = { "Account"})
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -55,6 +62,15 @@ public class AccountController {
         } 
     }
 
+    /**
+     * This function deposits funds into an account and returns the Transaction ID or an
+     * error response.
+     * 
+     * @param accountId ID of account into which funds will be deposited
+     * @param transactionRequest includes amount which will be deposited
+     * @return respose including transaction ID in case transaction is successful, 
+     * or an appropiate error message in case of failure.  
+     */
     @Operation(summary = "Deposit funds into account", tags = { "Account"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -75,6 +91,15 @@ public class AccountController {
         }
     }
 
+    /**
+     * Withdraws funds from an account and returns the transaction ID or an
+     * error response.
+     * 
+     * @param accountId ID of account from which funds will be withdrawn
+     * @param transactionRequest includes amount which will be withdrawn
+     * @return respose including transaction ID in case transaction is successful, 
+     * or an appropiate error message in case of failure.  
+     */
     @Operation(summary = "Withdraw funds from account", tags = { "Account"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -96,6 +121,14 @@ public class AccountController {
     }
 
 
+    /**
+     * Checks the account balance for a given account ID and returns the balance or an
+     * error response.
+     * 
+     * @param accountId ID of account to check balance
+     * @return respose including balance in case transaction is successful, 
+     * or an appropiate error message in case of failure.
+     */
     @Operation(summary = "Check account balance", tags = { "Account"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {

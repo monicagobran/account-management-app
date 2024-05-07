@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.bankapp"},{"l":"com.github.bankapp.controller"},{"l":"com.github.bankapp.dto"},{"l":"com.github.bankapp.entity"},{"l":"com.github.bankapp.exception"},{"l":"com.github.bankapp.repository"},{"l":"com.github.bankapp.service"}];updateSearchResults();
